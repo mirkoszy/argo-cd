@@ -808,6 +808,14 @@ func helmTemplate(appPath string, repoRoot string, env *v1alpha1.Env, q *apiclie
 		return nil, err
 	}
 
+	if h.IsDependencyUpdateRequired() {
+		err = h.DependencyBuild()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
 	out, err := h.Template(templateOpts)
 	if err != nil {
 		if !helm.IsMissingDependencyErr(err) {
