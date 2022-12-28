@@ -240,7 +240,11 @@ func (c *Cmd) PullOCI(repo string, chart string, version string, destination str
 }
 
 func (c *Cmd) dependencyBuild() (string, error) {
-	return c.run("dependency", "build")
+	return c.run("dependency", "update")
+}
+
+func (c *Cmd) dependencyList() (string, error) {
+	return c.run("dependency", "list")
 }
 
 func (c *Cmd) inspectValues(values string) (string, error) {

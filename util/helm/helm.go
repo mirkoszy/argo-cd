@@ -31,6 +31,8 @@ type Helm interface {
 	GetParameters(valuesFiles []pathutil.ResolvedFilePath, appPath, repoRoot string) (map[string]string, error)
 	// DependencyBuild runs `helm dependency build` to download a chart's dependencies
 	DependencyBuild() error
+	// DependencyBuild runs `helm dependency build` to download a chart's dependencies
+	IsDependencyUpdateRequired() bool
 	// Init runs `helm init --client-only`
 	Init() error
 	// Dispose deletes temp resources
@@ -68,6 +70,20 @@ func (h *helm) Template(templateOpts *TemplateOpts) (string, error) {
 		return "", err
 	}
 	return out, nil
+}
+
+func (h *helm) IsDependencyUpdateRequired() bool {
+	dependencyStatus, err := h.cmd.dependencyList()
+
+	if err != nil {
+		return false
+	}
+
+	if (strings.Contains(dependencyStatus, "WARNING")) || (strings.Contains(dependencyStatus, "wrong")) {
+		return true
+	}
+
+	return false
 }
 
 func (h *helm) DependencyBuild() error {
