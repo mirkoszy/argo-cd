@@ -401,9 +401,9 @@ func (m *nativeGitClient) Checkout(revision string, submoduleEnabled bool) error
 			}
 		}
 	}
-	// if _, err := m.runCmd("clean", "-fdx"); err != nil {
-	// 	return err
-	// }
+	if _, err := m.runCmd("clean", "-ffdx", "--exclude", "charts", "--exclude", "Chart.lock"); err != nil {
+		return err
+	}
 	return nil
 }
 
